@@ -80,32 +80,60 @@ LRESULT CALLBACK WndProc(
 	_In_ LPARAM lParam
 )
 {
-	HINSTANCE dll;
+	HINSTANCE dllC, dllF;
+	
+
+	HDC WindowDC;
+	WindowDC = GetDC(hWnd);
 	switch (message)
 	{
 	case WM_CREATE:
 		
 		break;
-	case WM_LBUTTONDOWN:
-		dll = LoadLibrary(_T("dllColor.dll"));
-		if(dll == 0) 
-		{ 
-			MessageBox(
-				hWnd,
-				_T("__LINE__"),
-				_T("dll doesn`t defined"),
-				MB_OK
-			);
+	case WM_CHAR:
+		
+		//TemporaryDC = CreateCompatibleDC(WindowDC);
+
+		//BitmapDC = CreateCompatibleBitmap(WindowDC, rt.right - rt.left, rt.bottom - rt.top);
+		////take bitmap as a dc
+		//SelectObject(TemporaryDC, BitmapDC);
+
+		
+		dllC = LoadLibrary(_T("dllColor.dll"));
+		dllF = LoadLibrary(_T("dllFont.dll"));
+		if (!dllC||!dllF)
+		{
+			MessageBox(hWnd, L"Cannot open dll", L"spro_lb3 error", MB_ICONSTOP);
 		}
-		typedef void (*hello) (HWND);
-		hello h;
-		h = (hello)GetProcAddress(dll,"Hello");
-		h(hWnd);
-		FreeLibrary(dll);
+		typedef void (*dllColor) (HDC);
+		typedef wchar_t (*dllFont) (int);
+
+		dllColor randomTextColour;
+		dllFont changeCase;
+		randomTextColour = (dllColor)GetProcAddress(dllC, "RandomTextColour");
+		changeCase = (dllFont)GetProcAddress(dllF, "ChangeCase");
+
+		
+		KeyboardBuffer.push_back((TCHAR)wParam);
+		
+		for (size_t i = 0; i < KeyboardBuffer.size(); i++)
+		{
+			randomTextColour(WindowDC);
+			TextOut(WindowDC, i, 0, &KeyboardBuffer[i],1);
+		}
+		//copy dc(bitmap) to hdc(our screen)
+		//BitBlt(WindowDC, 0, 0, rt.right - rt.left, rt.bottom - rt.top, TemporaryDC, 0, 0, SRCCOPY);
+		FreeLibrary(dllC);
+		FreeLibrary(dllF);
+		DeleteDC(TemporaryDC);
+		DeleteObject(BitmapDC);
+		break;
+	case WM_SIZE:
+		GetClientRect(hWnd, &rt);
 		break;
 	case WM_DESTROY:
+		
 		PostQuitMessage(69);
-
 		break;
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);

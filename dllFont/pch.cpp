@@ -3,13 +3,16 @@
 #include "pch.h"
 
 // When you are using pre-compiled headers, this source file is necessary for compilation to succeed.
-DLLEXP void RandomTextColour(HDC CurrentDC)
+DLLEXP wchar_t ChangeCase(int letter)
 {
-	srand(time(0));
-
-	SetTextColor(CurrentDC,
-		RGB( rand()%255,
-			 rand() % 255,
-			 rand() % 255
-	));
+	//lower 97-122
+	//upper 65-90
+	if (letter >= 65 || letter <= 90)
+	{
+		letter += 32;
+	}
+	else
+		letter -= 32;
+	
+	return letter;
 }

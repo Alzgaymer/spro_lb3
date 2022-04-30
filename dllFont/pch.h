@@ -6,10 +6,10 @@
 
 #ifndef PCH_H
 #define PCH_H
-//defining dll export
+//define dll export
 #define DLLEXP extern "C" __declspec(dllexport)
 // add headers that you want to pre-compile here
 #include "framework.h"
 
-DLLEXP void RandomTextColour(HDC);
+DLLEXP wchar_t ChangeCase(int);
 #endif //PCH_H

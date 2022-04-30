@@ -5,6 +5,11 @@ static TCHAR szWindowClass[] = _T("Title");
 static const auto MaxPixelsFSX = GetSystemMetrics(SM_CXFULLSCREEN);
 static const auto MaxPixelsFSY = GetSystemMetrics(SM_CYFULLSCREEN);
 
+
+static /*std::vector<wchar_t> */ std::wstring KeyboardBuffer;
+static RECT rt;
+static HDC TemporaryDC;
+static HBITMAP BitmapDC;
 #pragma endregion
 
 LRESULT CALLBACK WndProc(
