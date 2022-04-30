@@ -11,5 +11,5 @@
 // add headers that you want to pre-compile here
 #include "framework.h"
 
-DLLEXP wchar_t ChangeCase(int);
+DLLEXP void ChangeCase(std::wstring & letter);
 #endif //PCH_H

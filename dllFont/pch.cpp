@@ -3,16 +3,19 @@
 #include "pch.h"
 
 // When you are using pre-compiled headers, this source file is necessary for compilation to succeed.
-DLLEXP wchar_t ChangeCase(int letter)
+DLLEXP void ChangeCase(std::wstring & str)
 {
 	//lower 97-122
 	//upper 65-90
-	if (letter >= 65 || letter <= 90)
+	if (str.empty())
 	{
-		letter += 32;
+		return;
 	}
-	else
-		letter -= 32;
-	
-	return letter;
+	size_t lastLetter = str.size()-1;
+	if (iswlower((wint_t)str[lastLetter]))
+	{
+		str[lastLetter] = towupper(str[lastLetter]);
+	}
+	else 
+		str[lastLetter] = towlower(str[lastLetter]);
 }

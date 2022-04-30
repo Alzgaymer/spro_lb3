@@ -106,7 +106,7 @@ LRESULT CALLBACK WndProc(
 			MessageBox(hWnd, L"Cannot open dll", L"spro_lb3 error", MB_ICONSTOP);
 		}
 		typedef void (*dllColor) (HDC);
-		typedef wchar_t (*dllFont) (int);
+		typedef void (*dllFont) (std::wstring);
 
 		dllColor randomTextColour;
 		dllFont changeCase;
@@ -115,7 +115,7 @@ LRESULT CALLBACK WndProc(
 
 		
 		KeyboardBuffer.push_back((TCHAR)wParam);
-		
+		changeCase(KeyboardBuffer);
 		//for (size_t i = 0; i < KeyboardBuffer.size(); i++)
 		//{
 			randomTextColour(TemporaryDC);
@@ -131,6 +131,7 @@ LRESULT CALLBACK WndProc(
 		break;
 	case WM_SIZE:
 		GetClientRect(hWnd, &rt);
+		Draw(WindowDC);
 		break;
 	case WM_DESTROY:
 		
@@ -141,4 +142,33 @@ LRESULT CALLBACK WndProc(
 		break;
 	}
 
+}
+
+void Draw(HDC WindowDC)
+{
+	HINSTANCE dllC = LoadLibrary(_T("dllColor.dll"));
+
+	if (!dllC)
+	{
+		MessageBox(0, L"Cannot open dll", L"spro_lb3 error", MB_ICONSTOP);
+	}
+	typedef void (*dllColor) (HDC);
+	
+
+	dllColor randomTextColour;
+	randomTextColour = (dllColor)GetProcAddress(dllC, "RandomTextColour");
+	TemporaryDC = CreateCompatibleDC(WindowDC);
+
+	BitmapDC = CreateCompatibleBitmap(WindowDC, rt.right - rt.left, rt.bottom - rt.top);
+	//take bitmap as a dc
+	SelectObject(TemporaryDC, BitmapDC);
+
+	randomTextColour(TemporaryDC);
+	DrawText(TemporaryDC, &KeyboardBuffer[0], KeyboardBuffer.size(), &rt, 0);
+
+	BitBlt(WindowDC, 0, 0, rt.right - rt.left, rt.bottom - rt.top, TemporaryDC, 0, 0, SRCCOPY);
+
+	DeleteDC(TemporaryDC);
+	DeleteObject(BitmapDC);
+	FreeLibrary(dllC);
 }

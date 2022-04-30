@@ -19,3 +19,4 @@ LRESULT CALLBACK WndProc(
 	_In_ LPARAM lParam
 );
 
+void Draw(HDC);
