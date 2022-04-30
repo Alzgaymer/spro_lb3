@@ -91,12 +91,12 @@ LRESULT CALLBACK WndProc(
 		
 		break;
 	case WM_CHAR:
-		
-		//TemporaryDC = CreateCompatibleDC(WindowDC);
 
-		//BitmapDC = CreateCompatibleBitmap(WindowDC, rt.right - rt.left, rt.bottom - rt.top);
-		////take bitmap as a dc
-		//SelectObject(TemporaryDC, BitmapDC);
+		TemporaryDC = CreateCompatibleDC(WindowDC);
+
+		BitmapDC = CreateCompatibleBitmap(WindowDC, rt.right - rt.left, rt.bottom - rt.top);
+		//take bitmap as a dc
+		SelectObject(TemporaryDC, BitmapDC);
 
 		
 		dllC = LoadLibrary(_T("dllColor.dll"));
@@ -116,13 +116,14 @@ LRESULT CALLBACK WndProc(
 		
 		KeyboardBuffer.push_back((TCHAR)wParam);
 		
-		for (size_t i = 0; i < KeyboardBuffer.size(); i++)
-		{
-			randomTextColour(WindowDC);
-			TextOut(WindowDC, i, 0, &KeyboardBuffer[i],1);
-		}
+		//for (size_t i = 0; i < KeyboardBuffer.size(); i++)
+		//{
+			randomTextColour(TemporaryDC);
+			DrawText(TemporaryDC, &KeyboardBuffer[0], KeyboardBuffer.size(), &rt, 0);
+		//}
+		SetWindowText(hWnd, &KeyboardBuffer[0]);
 		//copy dc(bitmap) to hdc(our screen)
-		//BitBlt(WindowDC, 0, 0, rt.right - rt.left, rt.bottom - rt.top, TemporaryDC, 0, 0, SRCCOPY);
+		BitBlt(WindowDC, 0, 0, rt.right - rt.left, rt.bottom - rt.top, TemporaryDC, 0, 0, SRCCOPY);
 		FreeLibrary(dllC);
 		FreeLibrary(dllF);
 		DeleteDC(TemporaryDC);
