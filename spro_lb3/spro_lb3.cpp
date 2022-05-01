@@ -91,43 +91,24 @@ LRESULT CALLBACK WndProc(
 		
 		break;
 	case WM_CHAR:
-
-		TemporaryDC = CreateCompatibleDC(WindowDC);
-
-		BitmapDC = CreateCompatibleBitmap(WindowDC, rt.right - rt.left, rt.bottom - rt.top);
-		//take bitmap as a dc
-		SelectObject(TemporaryDC, BitmapDC);
-
 		
-		dllC = LoadLibrary(_T("dllColor.dll"));
 		dllF = LoadLibrary(_T("dllFont.dll"));
-		if (!dllC||!dllF)
+		if (!dllF)
 		{
 			MessageBox(hWnd, L"Cannot open dll", L"spro_lb3 error", MB_ICONSTOP);
 		}
-		typedef void (*dllColor) (HDC);
-		typedef void (*dllFont) (std::wstring);
+		typedef TCHAR (*dllFont) (const TCHAR&);
 
-		dllColor randomTextColour;
 		dllFont changeCase;
-		randomTextColour = (dllColor)GetProcAddress(dllC, "RandomTextColour");
 		changeCase = (dllFont)GetProcAddress(dllF, "ChangeCase");
-
+		//pushback inverter case
+		KeyboardBuffer.push_back(changeCase((TCHAR)wParam));
 		
-		KeyboardBuffer.push_back((TCHAR)wParam);
-		changeCase(KeyboardBuffer);
-		//for (size_t i = 0; i < KeyboardBuffer.size(); i++)
-		//{
-			randomTextColour(TemporaryDC);
-			DrawText(TemporaryDC, &KeyboardBuffer[0], KeyboardBuffer.size(), &rt, 0);
-		//}
+		Draw(WindowDC);
+		//set the window title to check the uotputting text
 		SetWindowText(hWnd, &KeyboardBuffer[0]);
-		//copy dc(bitmap) to hdc(our screen)
-		BitBlt(WindowDC, 0, 0, rt.right - rt.left, rt.bottom - rt.top, TemporaryDC, 0, 0, SRCCOPY);
-		FreeLibrary(dllC);
 		FreeLibrary(dllF);
-		DeleteDC(TemporaryDC);
-		DeleteObject(BitmapDC);
+
 		break;
 	case WM_SIZE:
 		GetClientRect(hWnd, &rt);
@@ -160,6 +141,7 @@ void Draw(HDC WindowDC)
 	TemporaryDC = CreateCompatibleDC(WindowDC);
 
 	BitmapDC = CreateCompatibleBitmap(WindowDC, rt.right - rt.left, rt.bottom - rt.top);
+	
 	//take bitmap as a dc
 	SelectObject(TemporaryDC, BitmapDC);
 
