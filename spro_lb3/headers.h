@@ -4,5 +4,6 @@
 #include <vector>
 #include <list>
 #include <xstring>
+#include <Font.h>
 //
 #include "spro_lb3.h"

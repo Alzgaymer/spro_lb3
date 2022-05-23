@@ -80,7 +80,7 @@ LRESULT CALLBACK WndProc(
 	_In_ LPARAM lParam
 )
 {
-	HINSTANCE dllC, dllF;
+	//HINSTANCE dllF;
 	
 
 	HDC WindowDC;
@@ -91,23 +91,23 @@ LRESULT CALLBACK WndProc(
 		
 		break;
 	case WM_CHAR:
-		
-		dllF = LoadLibrary(_T("dllFont.dll"));
-		if (!dllF)
+		switch (wParam)
 		{
-			MessageBox(hWnd, L"Cannot open dll", L"spro_lb3 error", MB_ICONSTOP);
-		}
-		typedef TCHAR (*dllFont) (const TCHAR&);
-
-		dllFont changeCase;
-		changeCase = (dllFont)GetProcAddress(dllF, "ChangeCase");
-		//pushback inverter case
-		KeyboardBuffer.push_back(changeCase((TCHAR)wParam));
+		case 0x08:
+			if (KeyboardBuffer.size() != 0)
+			{
+				KeyboardBuffer.pop_back();
+				KeyboardBuffer.replace(KeyboardBuffer.end() - 2, KeyboardBuffer.end() - 1, L" ");
+			}
+			
+			break;
+		}	
+		KeyboardBuffer.push_back(ChangeCase(wParam == 0x08 && KeyboardBuffer.size() != 0 ? L' ' : (TCHAR)wParam));
 		
 		Draw(WindowDC);
 		//set the window title to check the uotputting text
 		SetWindowText(hWnd, &KeyboardBuffer[0]);
-		FreeLibrary(dllF);
+		//FreeLibrary(dllF);
 
 		break;
 	case WM_SIZE:

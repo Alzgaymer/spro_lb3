@@ -7,9 +7,9 @@
 #ifndef PCH_H
 #define PCH_H
 //define dll export
-#define DLLEXP extern "C" __declspec(dllexport)
+
 // add headers that you want to pre-compile here
 #include "framework.h"
 
-DLLEXP TCHAR ChangeCase(const TCHAR & str);
+
 #endif //PCH_H
