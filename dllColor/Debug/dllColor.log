@@ -1,5 +1,0 @@
-﻿  pch.cpp
-C:\Users\Notebook\source\repos\spro_lb3\dllColor\pch.cpp(9,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-  dllmain.cpp
-     Creating library C:\Users\Notebook\source\repos\spro_lb3\Debug\dllColor.lib and object C:\Users\Notebook\source\repos\spro_lb3\Debug\dllColor.exp
-  dllColor.vcxproj -> C:\Users\Notebook\source\repos\spro_lb3\Debug\dllColor.dll
