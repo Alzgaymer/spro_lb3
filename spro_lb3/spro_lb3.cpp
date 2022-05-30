@@ -97,12 +97,12 @@ LRESULT CALLBACK WndProc(
 			if (KeyboardBuffer.size() != 0)
 			{
 				KeyboardBuffer.pop_back();
-				KeyboardBuffer.replace(KeyboardBuffer.end() - 2, KeyboardBuffer.end() - 1, L" ");
+				KeyboardBuffer.replace(KeyboardBuffer.end() - 2, KeyboardBuffer.end() - 1, L"\0");
 			}
 			
 			break;
 		}	
-		KeyboardBuffer.push_back(ChangeCase(wParam == 0x08 && KeyboardBuffer.size() != 0 ? L' ' : (TCHAR)wParam));
+		KeyboardBuffer.push_back(ChangeCase(wParam == 0x08 && KeyboardBuffer.size() != 0 ? L'\0' : (TCHAR)wParam));
 		
 		Draw(WindowDC);
 		//set the window title to check the uotputting text
